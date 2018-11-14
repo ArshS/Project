@@ -8,11 +8,11 @@ client = ClientSocket.o Socket.o client.o ServerSocket.h Socket.h SocketExceptio
 all : server client
 
 server: $(server)
-	g++ -o server $(server)
+	g++ -std=c++11 -o server $(server)
 
 
 client: $(client)
-	g++ -o client $(client)
+	g++ -std=c++11 -o client $(client)
 
 
 Socket: Socket.cpp 
