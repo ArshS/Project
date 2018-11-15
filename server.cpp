@@ -1,6 +1,8 @@
 #include "ServerSocket.h"
 #include "SocketException.h"
 #include <string>
+
+using namespace std;
  
 int main(int argc, int argv[])
 {
@@ -19,7 +21,7 @@ int main(int argc, int argv[])
 	 // with the client.
 	 try{
 	    while (true){
-	       std::string data;
+	       string data;
 	       new_sock >> data;
 	       new_sock << data;
 	    }

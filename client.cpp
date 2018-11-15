@@ -14,7 +14,7 @@ int main()
       //std::stringstream s;
       // Usually in real applications, the following
       // will be put into a loop. 
-      int num=1;
+      int num=0;
       std::string test="";
       //std::string tmp=std::to_string(num);
       while(true){
