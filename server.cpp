@@ -1,14 +1,29 @@
 #include "ServerSocket.h"
 #include "SocketException.h"
 #include <string>
+#include <fstream>
 
 using namespace std;
 std::string ack2 = "ACK";   
  
 int main(int argc, int argv[])
-{
-
+{	
    std::cout << "running....\n";
+
+   ifstream infile;
+   infile.open("/home/sina3615/CPSC3780Project/Project/file.txt");
+   string line;
+   while(infile){
+   getline(infile, line);
+
+   		cout << line;
+    char ch;
+    do
+    {
+      ch = cin.get();
+    }while(ch != '\n');
+  
+   }
 
    try{
 	      // Create the socket
@@ -18,7 +33,7 @@ int main(int argc, int argv[])
 	   	ServerSocket serverListener(30001);
 
 
-	    while (true){
+	    //while (true){
 		 ServerSocket data_sock;
 		 ServerSocket ack_sock;
 		 serverSender.accept(data_sock);
@@ -36,7 +51,7 @@ int main(int argc, int argv[])
 		 	//server.accept(ack_sock);
 		 
 		 try{
-		    while (true){
+		    //while (true){
 		       std::string data ="Hello";
 		       std::string ack;
 		     
@@ -48,12 +63,12 @@ int main(int argc, int argv[])
 		        	//data_sock << data;
 		        	cout<<"GOT ack!"<<endl;
 		       }
-		    }
+		    //}
 		 }
 		 catch(SocketException&){
 		 }
 	      }
-	   } 
+	   //} 
 	}
 	catch (SocketException& e){
 	std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
