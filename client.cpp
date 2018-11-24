@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string>
 
+using namespace std;
+string Ack = "ACK";
+
 int main(int argc, int argv[])
 {
    try{
@@ -12,26 +15,24 @@ int main(int argc, int argv[])
       ClientSocket clientListener("localhost", 30000);
       //for acks and naks
       ClientSocket clientSender("localhost" , 30001);
-      std::string reply;
-      std::string request;
+      string reply;
+      string request;
       request= "gimmee";
       // Usually in real applications, the following
       // will be put into a loop. 
       clientSender << request;
-      while(request == "gimmee"){
+      clientListener >> reply;
+      clientSender << Ack;
+      while(reply!=""){
       try {
 	 	//client_socket << "Test message.";
-
+      	cout << reply << "\n";
 	 	clientListener >> reply;
-	 	std::string Ack;
-	 	Ack = "ACK";
 	 	clientSender << Ack;
 	 	//clientListener >> reply;
       }
-      catch(SocketException&){
-      }
-      std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
-  	}
+      catch(SocketException&){}
+  	  }
    }
    catch(SocketException& e){
       std::cout << "Exception was caught:" << e.description() << "\n";
