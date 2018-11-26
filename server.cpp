@@ -9,7 +9,7 @@ std::string Ack2 = "ACK";
 
 void sendTransmission(ifstream& infile);
 vector<string> frameBuilder(ifstream&);
-
+vector<string> parityGetter(vector<string>);
 int main()
 {	
 	ifstream infile;
@@ -26,7 +26,9 @@ void sendTransmission(ifstream& infile)
 	ServerSocket data_sock;
 	ServerSocket ack_sock;
 	vector<string> frames;
-	frames = frameBuilder(infile);
+	vector<string> frames2;
+	frames2 = frameBuilder(infile);
+	frames = parityGetter(frames2);
 	string data;
    	try{
   		//data
@@ -99,6 +101,54 @@ vector<string> frameBuilder(ifstream& infile)
 			}
 		}
 		cout<<"in here"<<endl;
+	}
+	return f;
+}
+
+vector<string> parityGetter(vector<string> f)
+{
+	for(int i=0; i<f.size(); i++)
+	{
+		//case for good parity
+		if(i%5 != 0)
+		{
+			int temp=0;
+			for(int j=0; j<f[i].length(); j++)
+			{
+				temp+=f[i].at(j);
+			}
+
+			//even
+			if(temp %2 ==0)
+			{
+				f[i].append("0");
+			}
+			//odd
+			else
+			{
+				f[i].append("1");
+			}
+		}
+		//case for simulating bad parity
+		else
+		{
+			int temp=0;
+			for(int j=0; j<f[i].length(); j++)
+			{
+				temp+=f[i].at(j);
+			}
+
+			//even
+			if(temp %2 ==0)
+			{
+				f[i].append("1");
+			}
+			//odd
+			else
+			{
+				f[i].append("0");
+			}
+		}
 	}
 	return f;
 }

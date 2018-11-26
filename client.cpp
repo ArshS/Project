@@ -16,7 +16,7 @@ int main(int argc, int argv[])
 
 void receiveTransmission()
 {
-	int lineNo = 1;
+	int lineNo = 0;
 	try
 	{
 		ClientSocket clientListener("localhost", 30000);
