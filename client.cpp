@@ -16,6 +16,7 @@ int main(int argc, int argv[])
 
 void receiveTransmission()
 {
+	int lineNo = 1;
 	try
 	{
 		ClientSocket clientListener("localhost", 30000);
@@ -29,7 +30,8 @@ void receiveTransmission()
 		{
 			try
 			{
-				cout<<reply<<"\n";
+				cout<<lineNo<<": "<< "\t" << reply << "\n";
+				lineNo++;
 				clientListener >> reply;
 				clientSender << Ack;
 			}

@@ -8,7 +8,7 @@ using namespace std;
 std::string Ack2 = "ACK";   
 
 void sendTransmission(ifstream& infile);
-vector<string> lineReader(ifstream&);
+vector<string> frameBuilder(ifstream&);
 
 int main()
 {	
@@ -26,7 +26,7 @@ void sendTransmission(ifstream& infile)
 	ServerSocket data_sock;
 	ServerSocket ack_sock;
 	vector<string> frames;
-	frames = lineReader(infile);
+	frames = frameBuilder(infile);
 	string data;
    	try{
   		//data
@@ -74,13 +74,18 @@ void sendTransmission(ifstream& infile)
 	data_sock << data;
 }
 
-vector<string> lineReader(ifstream& infile)
+vector<string> frameBuilder(ifstream& infile)
 {
 	vector<string> f;
 	string data;
 	int step=0;
 	while(getline(infile, data))
 	{
+		if(data.length()==0)
+		{
+			f.push_back("\n");
+		}
+
 		for(int i=0; i<data.length(); i+=64)
 		{
 			cout<<"len"<<data.length()<<endl;
