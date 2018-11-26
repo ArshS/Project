@@ -44,8 +44,7 @@ void sendTransmission(ifstream& infile)
 	 	// with the client.
    		if(request == "Request"){// "gimmee"){
 			cout<<"Got request"<<endl;
-			//while(getline(infile, data)){
-			//for(vector<string>::iterator it = frames.begin(); it != frames.end(); ++it)
+			//while(getline(infile, data))
 			for(int i = 0; i<frames.size(); i++)
 			{
 				//data += '\n';
@@ -77,28 +76,25 @@ void sendTransmission(ifstream& infile)
 
 vector<string> lineReader(ifstream& infile)
 {
-	vector<string> frames;
+	vector<string> f;
 	string data;
 	int step=0;
 	while(getline(infile, data))
 	{
-		for(int i=0; i<data.length(); i+65)
+		for(int i=0; i<data.length(); i+=64)
 		{
-			if((data.length()-i)<64)
+			cout<<"len"<<data.length()<<endl;
+			if((data.length()-i) < 64)
 			{
-				frames.push_back(data.substr(i, (data.length()-i)));
+				f.push_back(data.substr(i, (data.length()-i)));
 			}
 			else
 			{
-				frames.push_back(data.substr(i,64));
+				f.push_back(data.substr(i,64));
 			}
 		}
-		//data+='\n';
-		//frames.push_back(data.substr(i, 64));
-
-		//step=step+65;
+		cout<<"in here"<<endl;
 	}
-
-	return frames;
+	return f;
 }
 
