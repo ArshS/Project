@@ -68,10 +68,10 @@ void sendTransmission(ifstream& infile)
 			        }
 			        else if(ack.compare(Ack2)!=0)
 			        {
-			        	cout<<"IN NAKED"<<endl;
+			        	//cout<<"IN NAKED"<<endl;
 			        	while (ack.compare(Ack2)!=0)
 			        	{
-			        		cout<<"Got NAK!"<<endl;
+			        		cout<<"Got NAK! Retransmitting..."<<endl;
 			     			data = swapParity(data);
 			        		data_sock << data;
 			       			ack_sock >> ack;
@@ -119,7 +119,7 @@ vector<string> frameBuilder(ifstream& infile)
 
 		for(int i=0; i<data.length(); i+=64)
 		{
-			cout<<"len"<<data.length()<<endl;
+			//cout<<"len"<<data.length()<<endl;
 			if((data.length()-i) < 64)
 			{
 				f.push_back(data.substr(i, (data.length()-i)));
@@ -129,7 +129,7 @@ vector<string> frameBuilder(ifstream& infile)
 				f.push_back(data.substr(i,64));
 			}
 		}
-		cout<<"in here"<<endl;
+		//cout<<"in here"<<endl;
 	}
 	return f;
 }

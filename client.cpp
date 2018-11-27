@@ -26,14 +26,17 @@ void receiveTransmission()
 		request = "Request";
 		clientSender << request;
 		clientListener >> reply;
-		//Ack = AckAndNakker(reply);
 		clientSender << AckAndNakker(reply);
+
 		while(reply!="EOF")
 		{
 			try
 			{
-				cout<<lineNo<<": "<< "\t" << reply << "\n";
-				lineNo++;
+				if(AckAndNakker(reply) == "ACK")
+				{
+					cout<<lineNo<<": "<< "\t" << reply << "\n";
+					lineNo++;
+				}
 				clientListener >> reply;
 				clientSender << AckAndNakker(reply);
 			}
@@ -53,17 +56,17 @@ string AckAndNakker(string reply)
 	}
 	if(temp % 2 == 0 && reply.at(reply.length()-1)=='0')
 	{
-		cout<<"ACK!";
+		//cout<<"ACK!";
 		return "ACK";
 	}
 	else if(temp % 2 == 1 && reply.at(reply.length()-1)=='1')
 	{
-		cout<<"ACK!";
+		//cout<<"ACK!";
 		return "ACK";
 	}
 	else
 	{
-		cout<<"NAK!";
+		//cout<<"NAK!";
 		return "NAK";//"NAK";
 	}
 }
