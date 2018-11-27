@@ -7,6 +7,7 @@ using namespace std;
 string Ack = "ACK";
 
 void receiveTransmission();
+string AckAndNakker(string);
 
 int main(int argc, int argv[])
 {
@@ -25,7 +26,8 @@ void receiveTransmission()
 		request = "Request";
 		clientSender << request;
 		clientListener >> reply;
-		clientSender << Ack;
+		//Ack = AckAndNakker(reply);
+		clientSender << AckAndNakker(reply);
 		while(reply!="EOF")
 		{
 			try
@@ -33,10 +35,35 @@ void receiveTransmission()
 				cout<<lineNo<<": "<< "\t" << reply << "\n";
 				lineNo++;
 				clientListener >> reply;
-				clientSender << Ack;
+				clientSender << AckAndNakker(reply);
 			}
 			catch(SocketException&){}
 		}
 	}
 	catch(SocketException& e){cout<<"Exception was caught:"<<e.description()<<"\n";}
+}
+
+string AckAndNakker(string reply)
+{	
+	int temp=0;
+	int parity = 0;
+	for(int i = 0; i<reply.length()-1;i++)
+	{
+		temp += reply.at(i);
+	}
+	if(temp % 2 == 0 && reply.at(reply.length()-1)=='0')
+	{
+		cout<<"ACK!";
+		return "ACK";
+	}
+	else if(temp % 2 == 1 && reply.at(reply.length()-1)=='1')
+	{
+		cout<<"ACK!";
+		return "ACK";
+	}
+	else
+	{
+		cout<<"NAK!";
+		return "NAK";//"NAK";
+	}
 }

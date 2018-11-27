@@ -10,6 +10,7 @@ std::string Ack2 = "ACK";
 void sendTransmission(ifstream& infile);
 vector<string> frameBuilder(ifstream&);
 vector<string> parityGetter(vector<string>);
+string swapParity(string);
 int main()
 {	
 	ifstream infile;
@@ -65,6 +66,17 @@ void sendTransmission(ifstream& infile)
 			        	//data_sock << data;
 			        	cout<<"Got ack!"<<endl;
 			        }
+			        else if(ack.compare(Ack2)!=0)
+			        {
+			        	cout<<"IN NAKED"<<endl;
+			        	while (ack.compare(Ack2)!=0)
+			        	{
+			        		cout<<"Got NAK!"<<endl;
+			     			data = swapParity(data);
+			        		data_sock << data;
+			       			ack_sock >> ack;
+			       		}
+			        }
 			    }
 			    catch(SocketException&){}
 		}
@@ -74,6 +86,23 @@ void sendTransmission(ifstream& infile)
 	}
 	data="EOF";
 	data_sock << data;
+}
+
+string swapParity(string data)
+{
+	string temp;
+	if(data.at(data.length()-1) == '0')
+	{
+		temp = data.substr(0,data.size()-1);
+		temp.append("1");
+	}
+	if(data.at(data.length()-1) == '1')
+	{
+		temp = data.substr(0,data.size()-1);
+		temp.append("0");
+	}
+
+	return temp;
 }
 
 vector<string> frameBuilder(ifstream& infile)
