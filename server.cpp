@@ -5,34 +5,63 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <pthread.h>
 
 using namespace std;
 std::string Ack2 = "ACK";   
 
-void sendTransmission(ifstream& infile);
+// struct Argument
+// {
+// 	ServerSocket data_sock;
+// 	ServerSocket ack_sock;
+// };
+
+void sendTransmission();
 vector<string> frameBuilder(ifstream&);
 vector<string> parityGetter(vector<string>);
 string swapParity(string);
 string convert(int);
+vector<string> openFile(string);
 
 int main()
-{	
-	ifstream infile;
-	infile.open("/home/sina3615/CPSC3780Project/Project/file.txt");
-   	sendTransmission(infile);
+{
+	sendTransmission();	
+	//data
+   	//ServerSocket serverSender(30000);
+   	//ack
+	//ServerSocket serverListener(30001);
+
+	//Argument arg;
+
+ //   	sendTransmission(arg);
+
+ //   	for(i=0; i < NTHREADS; i++)
+	// {
+	//     pthread_create( &thread_id[i], NULL, &sendTransmission(), NULL );
+	// }
+	 
+	// for(j=0; j < NTHREADS; j++)
+	// {
+	//     pthread_join( thread_id[j], NULL);
+	// }
+
 	return 0;
 }
 
-void sendTransmission(ifstream& infile)
+void sendTransmission()
 {
+	//ifstream infile;
+	//infile.open("/home/sina3615/CPSC3780Project/Project/file.txt");
 	std::cout << "running....\n";
 	ServerSocket data_sock;
 	ServerSocket ack_sock;
-	vector<string> frames;
-	vector<string> frames2;
-	frames2 = frameBuilder(infile);
-	frames = parityGetter(frames2);
+	//vector<string> frames;
+	//vector<string> frames2;
+	//frames2 = frameBuilder(infile);
+//	frames = parityGetter(frames2);
 	string data;
+	while(true)
+	{
    	try{
   		//data
    		ServerSocket serverSender(30000);
@@ -44,43 +73,77 @@ void sendTransmission(ifstream& infile)
 	 	// For multiple threading, you need to create
 	 	// a new thread here and pass data_sock to it.
 	 	// The thread will use data_sock to communicate
-		std::string request;
-		ack_sock >> request;
-   		if(request == "Request"){
-			cout<<"Got request"<<endl;
-			for(int i = 0; i<frames.size(); i++)
-			{
-				data = frames[i];
-				try{
-			    	std::string ack;
-			    
-			        data_sock << data;
-			
-			        ack_sock >> ack;
+		std::string request, file;
+		ack_sock >> file;
 
-			        if(ack.compare(Ack2) == 0)
-			        {
-			        	cout<<"Got ack!"<<endl;
-			        }
-			        else if(ack.compare(Ack2)!=0)
-			        {
-			        	while (ack.compare(Ack2)!=0)
-			        	{
-			        		cout<<"Got NAK! Retransmitting..."<<endl;
-			     			data = swapParity(data);
-			        		data_sock << data;
-			       			ack_sock >> ack;
-			       		}
-			        }
-			    }
-			    catch(SocketException&){}
+		vector<string> frames = openFile(file);
+		//send(frames, data_sock, ack_sock, data);
+		for(int i = 0; i<frames.size(); i++)
+		{
+			data = frames[i];
+			try{
+		    	std::string ack;
+		    
+		        data_sock << data;
+		
+		        ack_sock >> ack;
+
+		        if(ack.compare(Ack2) == 0)
+		        {
+		        	cout<<"Got ack!"<<endl;
+		        }
+		        else if(ack.compare(Ack2)!=0)
+		        {
+		        	while (ack.compare(Ack2)!=0)
+		        	{
+		        		cout<<"Got NAK! Retransmitting..."<<endl;
+		     			data = swapParity(data);
+		        		data_sock << data;
+		       			ack_sock >> ack;
+		       		}
+		        }
+		    }
+		    catch(SocketException&){}
 		}
-	}
-	}catch (SocketException& e){
-		std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
-	}
+	}catch (SocketException& e){std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";}
 	data="EOF";
 	data_sock << data;
+}
+}
+
+vector<string> openFile(string file)
+{
+	vector<string> frames;
+	vector<string> frames2;
+	ifstream infile;
+
+	char filepath[file.size()];
+	for(int i=0; i<file.size(); i++)
+		filepath[i]=file[i];
+
+	if(file == "/home/sina3615/CPSC3780Project/Project/file.txt")
+   	{
+		cout<<"Got request for file 1"<<endl;
+		infile.open(filepath);
+		// /home/sina3615/CPSC3780Project/Project/file.txt
+		frames2 = frameBuilder(infile);
+		frames = parityGetter(frames2);
+	}
+	else if(file == "/home/sina3615/CPSC3780Project/Project/file2.txt")
+   	{
+		cout<<"Got request for file 2"<<endl;
+		infile.open(filepath);
+		frames2 = frameBuilder(infile);
+		frames = parityGetter(frames2);
+	}
+	else//(file == "/home/sina3615/CPSC3780Project/Project/file.txt")
+   	{
+		cout<<"Got invalid filepath. Processing default..."<<endl;
+		infile.open("/home/sina3615/CPSC3780Project/Project/file.txt");
+		frames2 = frameBuilder(infile);
+		frames = parityGetter(frames2);
+	}
+	return frames;
 }
 
 string swapParity(string data)

@@ -24,11 +24,21 @@ void receiveTransmission()
 	{
 		ClientSocket clientListener("localhost", 30000);
 		ClientSocket clientSender("localhost", 30001);
-		string reply, request;
+		string reply, request, file;
+		
+		cout<<"Enter Datapath request for File: "<<endl;
+		cin >> file;
+
 		request = "Request";
-		clientSender << request;
+		clientSender << file;
+
 		clientListener >> reply;
 		clientSender << AckAndNakker(reply);
+
+		//clientSender << file;
+		//clientListener >> reply;
+
+		//clientSender << AckAndNakker(reply);
 
 		while(reply!="EOF")
 		{
