@@ -19,7 +19,6 @@ int main(int argc, int argv[])
 void receiveTransmission()
 {
 	int lineNo = 0;
-	//vector<string> lines;
 	string currentLine;
 	try
 	{
@@ -37,24 +36,17 @@ void receiveTransmission()
 			{
 				if(AckAndNakker(reply) == "ACK")
 				{
-					//cout<<currentLine;
-					//cout<<lineNo<<": "<< "\t" << reply << "\n";
 					if(reply!="EOL0")
 					{
-						//lines.push_back(reply);
 						reply.erase(reply.length()-1, reply.length());
 						currentLine = currentLine+reply;
 					}
 					else if(reply=="EOL0")
 					{
-						//cout<<lineNo<<": "<< "\t" << currentLine << "\n";
-						//currentLine + '\n';
 						cout<<lineNo<<": "<< "\t" << currentLine << "\n";
 						lineNo++;
 						currentLine="";
 					}
-					//cout<<lineNo<<": "<< "\t" << currentLine << "\n";
-					//lineNo++;
 				}
 				clientListener >> reply;
 				clientSender << AckAndNakker(reply);
@@ -75,17 +67,14 @@ string AckAndNakker(string reply)
 	}
 	if(temp % 2 == 0 && reply.at(reply.length()-1)=='0')
 	{
-		//cout<<"ACK!";
 		return "ACK";
 	}
 	else if(temp % 2 == 1 && reply.at(reply.length()-1)=='1')
 	{
-		//cout<<"ACK!";
 		return "ACK";
 	}
 	else
 	{
-		//cout<<"NAK!";
-		return "NAK";//"NAK";
+		return "NAK";
 	}
 }

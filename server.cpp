@@ -26,8 +26,6 @@ int main()
 void sendTransmission(ifstream& infile)
 {
 	std::cout << "running....\n";
-	//ifstream infile;
-   	//infile.open("/home/sina3615/CPSC3780Project/Project/file.txt");
 	ServerSocket data_sock;
 	ServerSocket ack_sock;
 	vector<string> frames;
@@ -48,31 +46,24 @@ void sendTransmission(ifstream& infile)
 	 	// The thread will use data_sock to communicate
 		std::string request;
 		ack_sock >> request;
-	 	// with the client.
-   		if(request == "Request"){// "gimmee"){
+   		if(request == "Request"){
 			cout<<"Got request"<<endl;
-			//while(getline(infile, data))
 			for(int i = 0; i<frames.size(); i++)
 			{
-				//data += '\n';
 				data = frames[i];
 				try{
-			    //while (true){
-			       //data ="Hello";
 			    	std::string ack;
-			     	//data ="Hello\n";
+			    
 			        data_sock << data;
 			
 			        ack_sock >> ack;
 
 			        if(ack.compare(Ack2) == 0)
 			        {
-			        	//data_sock << data;
 			        	cout<<"Got ack!"<<endl;
 			        }
 			        else if(ack.compare(Ack2)!=0)
 			        {
-			        	//cout<<"IN NAKED"<<endl;
 			        	while (ack.compare(Ack2)!=0)
 			        	{
 			        		cout<<"Got NAK! Retransmitting..."<<endl;
@@ -125,12 +116,10 @@ vector<string> frameBuilder(ifstream& infile)
 		if(data.length()==0)
 		{
 			f.push_back("\n");
-			//f.push_back("EOL");
 		}
 
 		for(int i=0; i<data.length(); i+=64)
 		{
-			//cout<<"len"<<data.length()<<endl;
 			if((data.length()-i) < 64)
 			{
 				f.push_back(data.substr(i, (data.length()-i)));
@@ -141,7 +130,6 @@ vector<string> frameBuilder(ifstream& infile)
 			}
 		}
 		f.push_back("EOL");
-		//cout<<"in here"<<endl;
 	}
 	return f;
 }
