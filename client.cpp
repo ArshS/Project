@@ -42,12 +42,13 @@ void receiveTransmission()
 					if(reply!="EOL0")
 					{
 						//lines.push_back(reply);
+						reply.erase(reply.length()-1, reply.length());
 						currentLine = currentLine+reply;
 					}
 					else if(reply=="EOL0")
 					{
 						//cout<<lineNo<<": "<< "\t" << currentLine << "\n";
-						currentLine + '\n';
+						//currentLine + '\n';
 						cout<<lineNo<<": "<< "\t" << currentLine << "\n";
 						lineNo++;
 						currentLine="";

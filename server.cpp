@@ -122,7 +122,6 @@ vector<string> frameBuilder(ifstream& infile)
 	string data;
 	while(getline(infile, data))
 	{
-		cout<<data<<endl;
 		if(data.length()==0)
 		{
 			f.push_back("\n");
