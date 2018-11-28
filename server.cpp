@@ -2,7 +2,9 @@
 #include "SocketException.h"
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 std::string Ack2 = "ACK";   
@@ -11,6 +13,8 @@ void sendTransmission(ifstream& infile);
 vector<string> frameBuilder(ifstream&);
 vector<string> parityGetter(vector<string>);
 string swapParity(string);
+string convert(int);
+
 int main()
 {	
 	ifstream infile;
@@ -105,16 +109,24 @@ string swapParity(string data)
 	return temp;
 }
 
+string convert(int v)
+{
+	std::ostringstream oss;
+    oss << v;
+    return oss.str();
+}
+
 vector<string> frameBuilder(ifstream& infile)
 {
 	vector<string> f;
 	string data;
-	int step=0;
 	while(getline(infile, data))
 	{
+		cout<<data<<endl;
 		if(data.length()==0)
 		{
 			f.push_back("\n");
+			//f.push_back("EOL");
 		}
 
 		for(int i=0; i<data.length(); i+=64)
@@ -126,9 +138,10 @@ vector<string> frameBuilder(ifstream& infile)
 			}
 			else
 			{
-				f.push_back(data.substr(i,64));
+				f.push_back(data.substr(i,64));	
 			}
 		}
+		f.push_back("EOL");
 		//cout<<"in here"<<endl;
 	}
 	return f;

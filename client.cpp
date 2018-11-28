@@ -2,6 +2,7 @@
 #include "SocketException.h"
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 string Ack = "ACK";
@@ -18,6 +19,8 @@ int main(int argc, int argv[])
 void receiveTransmission()
 {
 	int lineNo = 0;
+	//vector<string> lines;
+	string currentLine;
 	try
 	{
 		ClientSocket clientListener("localhost", 30000);
@@ -34,8 +37,23 @@ void receiveTransmission()
 			{
 				if(AckAndNakker(reply) == "ACK")
 				{
-					cout<<lineNo<<": "<< "\t" << reply << "\n";
-					lineNo++;
+					//cout<<currentLine;
+					//cout<<lineNo<<": "<< "\t" << reply << "\n";
+					if(reply!="EOL0")
+					{
+						//lines.push_back(reply);
+						currentLine = currentLine+reply;
+					}
+					else if(reply=="EOL0")
+					{
+						//cout<<lineNo<<": "<< "\t" << currentLine << "\n";
+						currentLine + '\n';
+						cout<<lineNo<<": "<< "\t" << currentLine << "\n";
+						lineNo++;
+						currentLine="";
+					}
+					//cout<<lineNo<<": "<< "\t" << currentLine << "\n";
+					//lineNo++;
 				}
 				clientListener >> reply;
 				clientSender << AckAndNakker(reply);
