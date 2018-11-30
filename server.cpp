@@ -16,7 +16,10 @@ std::string Ack2 = "ACK";
 // 	ServerSocket ack_sock;
 // };
 
-void sendTransmission();
+//#define NTHREADS 1 
+#define NTHREADS 5 
+
+void *sendTransmission(void *);
 vector<string> frameBuilder(ifstream&);
 vector<string> parityGetter(vector<string>);
 string swapParity(string);
@@ -25,30 +28,26 @@ vector<string> openFile(string);
 
 int main()
 {
-	sendTransmission();	
-	//data
-   	//ServerSocket serverSender(30000);
-   	//ack
-	//ServerSocket serverListener(30001);
+	//sendTransmission();	
+	
+	pthread_t thread_id[NTHREADS];
 
-	//Argument arg;
+	for(int i=0; i < NTHREADS; i++)
+	{
 
- //   	sendTransmission(arg);
-
- //   	for(i=0; i < NTHREADS; i++)
-	// {
-	//     pthread_create( &thread_id[i], NULL, &sendTransmission(), NULL );
-	// }
+	    pthread_create(&thread_id[i], NULL, sendTransmission ,NULL);//thread_function, NULL );
+	}
 	 
-	// for(j=0; j < NTHREADS; j++)
-	// {
-	//     pthread_join( thread_id[j], NULL);
-	// }
+	for(int j=0; j < NTHREADS; j++)
+	{
+	    pthread_join(thread_id[j], NULL);
+
+	}
 
 	return 0;
 }
 
-void sendTransmission()
+void *sendTransmission(void * dummyptr)
 {
 	//ifstream infile;
 	//infile.open("/home/sina3615/CPSC3780Project/Project/file.txt");
