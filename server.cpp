@@ -6,18 +6,20 @@
 #include <vector>
 #include <iostream>
 #include <pthread.h>
+//#include <thread>
 
 using namespace std;
 std::string Ack2 = "ACK";   
 
-// struct Argument
-// {
-// 	ServerSocket data_sock;
-// 	ServerSocket ack_sock;
-// };
+struct Arg
+{
+ 	ServerSocket dataptr;
+ 	ServerSocket ackptr;
+};
 
 //#define NTHREADS 1 
-#define NTHREADS 5 
+#define NTHREADS 5
+int p=0;
 
 void *sendTransmission(void *);
 vector<string> frameBuilder(ifstream&);
@@ -26,46 +28,84 @@ string swapParity(string);
 string convert(int);
 vector<string> openFile(string);
 
+//ServerSocket data_sock;
+//ServerSocket ack_sock;
+//data
+ServerSocket serverSender(30000);
+//ack
+ServerSocket serverListener(30001);
+//serverSender.accept(data_sock);
+//		serverListener.accept(ack_sock);
+
 int main()
 {
-	//sendTransmission();	
-	
+	int *x;
+
+	sendTransmission(x);
+	//Arg args;
+	//sendTransmission();
+/*
+	ServerSocket serverSender(30000);
+	ServerSocket serverListener(30001);
+
+	ServerSocket data_sock;
+	ServerSocket ack_sock;
+
 	pthread_t thread_id[NTHREADS];
 
+	//loop the thing 5 times as last ditch effort
 	for(int i=0; i < NTHREADS; i++)
 	{
+		cout<<"creating thread"<<endl;
+		//serverSender.accept(data_sock);
+		//serverListener.accept(ack_sock);
+		cout<<"after accepting"<<endl;
 
-	    pthread_create(&thread_id[i], NULL, sendTransmission ,NULL);//thread_function, NULL );
+		args.dataptr = data_sock;
+		args.ackptr = ack_sock;
+
+	    pthread_create(&thread_id[i], NULL, &sendTransmission ,args);
 	}
 	 
-	for(int j=0; j < NTHREADS; j++)
-	{
-	    pthread_join(thread_id[j], NULL);
+	//for(int j=0; j < NTHREADS; j++)
+	//{
+	  //  pthread_join(thread_id[j], NULL);
 
-	}
+	//}*/
 
 	return 0;
 }
 
-void *sendTransmission(void * dummyptr)
+void *sendTransmission(void *args)
 {
 	//ifstream infile;
 	//infile.open("/home/sina3615/CPSC3780Project/Project/file.txt");
+	
 	std::cout << "running....\n";
+	//Arg a1;
+	
+	//serverSender.accept(data_sock);
+		//serverListener.accept(ack_sock);
 	ServerSocket data_sock;
 	ServerSocket ack_sock;
+
+	//data_sock = &args.dataptr;
+	//ack_sock = &args.ackptr;
+
 	//vector<string> frames;
 	//vector<string> frames2;
 	//frames2 = frameBuilder(infile);
-//	frames = parityGetter(frames2);
+	//frames = parityGetter(frames2);
+
+	cout<<"before loop"<<endl;
 	string data;
 	while(true)
 	{
    	try{
   		//data
-   		ServerSocket serverSender(30000);
+   		//ServerSocket serverSender(30000);
    		//ack
-		ServerSocket serverListener(30001);
+		//ServerSocket serverListener(30001);
 		serverSender.accept(data_sock);
 		serverListener.accept(ack_sock);
 
@@ -73,7 +113,18 @@ void *sendTransmission(void * dummyptr)
 	 	// a new thread here and pass data_sock to it.
 	 	// The thread will use data_sock to communicate
 		std::string request, file;
+		//ack_sock >> file;
+		cout<<"getting file"<<endl;
 		ack_sock >> file;
+		cout<<"got file"<<endl;
+
+		pthread_t thread_id[NTHREADS];
+		//int p=0;
+		if(p<NTHREADS)
+		{
+			pthread_create(&thread_id[p], NULL, &sendTransmission ,NULL);
+			p++;
+		}
 
 		vector<string> frames = openFile(file);
 		//send(frames, data_sock, ack_sock, data);
@@ -84,21 +135,25 @@ void *sendTransmission(void * dummyptr)
 		    	std::string ack;
 		    
 		        data_sock << data;
+		        //arg->data_sock << data; 
 		
 		        ack_sock >> ack;
+		        //arg->ack_sock >> ack;
 
 		        if(ack.compare(Ack2) == 0)
 		        {
-		        	cout<<"Got ack!"<<endl;
+		        	//cout<<"Got ack!"<<endl;
 		        }
 		        else if(ack.compare(Ack2)!=0)
 		        {
 		        	while (ack.compare(Ack2)!=0)
 		        	{
-		        		cout<<"Got NAK! Retransmitting..."<<endl;
+		        		//cout<<"Got NAK! Retransmitting..."<<endl;
 		     			data = swapParity(data);
 		        		data_sock << data;
+		        		//arg->data_sock << data; 
 		       			ack_sock >> ack;
+		       			//arg->ack_sock >> ack;
 		       		}
 		        }
 		    }
@@ -107,6 +162,7 @@ void *sendTransmission(void * dummyptr)
 	}catch (SocketException& e){std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";}
 	data="EOF";
 	data_sock << data;
+	//arg->data_sock << data; 
 }
 }
 
@@ -128,7 +184,7 @@ vector<string> openFile(string file)
 		frames2 = frameBuilder(infile);
 		frames = parityGetter(frames2);
 	}
-	else if(file == "/home/sina3615/CPSC3780Project/Project/file2.txt")
+	else if(file == "/home/sina3615/CPSC3780Project/Project/big.txt")
    	{
 		cout<<"Got request for file 2"<<endl;
 		infile.open(filepath);
