@@ -42,36 +42,6 @@ int main()
 	int *x;
 
 	sendTransmission(x);
-	//Arg args;
-	//sendTransmission();
-/*
-	ServerSocket serverSender(30000);
-	ServerSocket serverListener(30001);
-
-	ServerSocket data_sock;
-	ServerSocket ack_sock;
-
-	pthread_t thread_id[NTHREADS];
-
-	//loop the thing 5 times as last ditch effort
-	for(int i=0; i < NTHREADS; i++)
-	{
-		cout<<"creating thread"<<endl;
-		//serverSender.accept(data_sock);
-		//serverListener.accept(ack_sock);
-		cout<<"after accepting"<<endl;
-
-		args.dataptr = data_sock;
-		args.ackptr = ack_sock;
-
-	    pthread_create(&thread_id[i], NULL, &sendTransmission ,args);
-	}
-	 
-	//for(int j=0; j < NTHREADS; j++)
-	//{
-	  //  pthread_join(thread_id[j], NULL);
-
-	//}*/
 
 	return 0;
 }
@@ -120,6 +90,10 @@ void *sendTransmission(void *args)
 
 		pthread_t thread_id[NTHREADS];
 		//int p=0;
+		while(!(p<NTHREADS))
+		{
+			cout<<"waiting for free thread..."<<endl;
+		}
 		if(p<NTHREADS)
 		{
 			pthread_create(&thread_id[p], NULL, &sendTransmission ,NULL);
@@ -162,6 +136,7 @@ void *sendTransmission(void *args)
 	}catch (SocketException& e){std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";}
 	data="EOF";
 	data_sock << data;
+	p--;
 	//arg->data_sock << data; 
 }
 }
