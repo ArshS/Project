@@ -6,6 +6,9 @@
 #include <vector>
 #include <iostream>
 #include <pthread.h>
+#include <stdio.h>     
+#include <stdlib.h>     
+#include <time.h>
 
 using namespace std;
 
@@ -272,10 +275,17 @@ vector<string> frameBuilder(ifstream& infile)
 //from framebuilder and adds the parity bit for each frame
 vector<string> parityGetter(vector<string> f)
 {
+	int randi;
+	time_t t;
+	srand((unsigned) time(&t));
 	for(int i=0; i<f.size(); i++)
 	{
-		//case for good parity
-		if(i%5 != 0)
+		if(i%5==0)
+		{
+			randi=rand();
+		}
+		
+		if(randi%5 != 0)
 		{
 			int temp=0;
 			//loop through the frame and add it up
@@ -316,6 +326,7 @@ vector<string> parityGetter(vector<string> f)
 				f[i].append("0");
 			}
 		}
+		randi++;
 	}
 	return f;
 }
