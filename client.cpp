@@ -27,9 +27,13 @@ void receiveTransmission()
 	string currentLine;
 	try
 	{
-		//setup the ports
-		ClientSocket clientListener("localhost", 30000);
-		ClientSocket clientSender("localhost", 30001);
+		//get ip
+		string IP;
+		cout<<"Please enter server IP Address."<<endl;
+		cin>>IP;
+		//setup the ports with the IP address
+		ClientSocket clientListener(IP,30000);//"localhost", 30000);
+		ClientSocket clientSender(IP,30001);//"localhost", 30001);
 
 		//for reply which are the frames, and file for the initial request 
 		//and the file path
